@@ -6,7 +6,7 @@
         public object Value { get; private set; }
 
         public InsertDataCustom(string type, object value) :
-            base(DataType.Custom)
+            base(DataType.Custom, value.ToString())
         {
             CustomType = type;
             Value = value;

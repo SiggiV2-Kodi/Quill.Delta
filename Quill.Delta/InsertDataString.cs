@@ -5,7 +5,7 @@
         public string Value { get; private set; }
 
         protected InsertDataString(DataType type, string value) :
-           base(type)
+           base(type, value)
         {
             Value = value;
         }

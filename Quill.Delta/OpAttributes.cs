@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Quill.Delta
 {
@@ -12,6 +13,7 @@ namespace Quill.Delta
         public string Width { get; set; }
 
         public string Table { get; set; }
+        public bool isTable { get; set; }
 
         public string Link { get; set; }
         public bool? Bold { get; set; }

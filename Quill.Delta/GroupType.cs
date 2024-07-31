@@ -5,6 +5,7 @@
         Block,
         InlineGroup,
         List,
-        Video
+        Video,
+        Table
     };
 }

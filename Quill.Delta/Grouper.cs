@@ -132,27 +132,30 @@ namespace Quill.Delta
         }
     }
 
+    // =========== NEW TABLE GROUPS ===========
+    public class TableLevel : Group
+    {
+        public int Level { get; private set; }
+        public IList<BlockGroup> BlockGroups { get; set; }
+
+        public TableLevel(int level, IList<BlockGroup> blockGroups)
+        {
+            Level = level;
+            BlockGroups = blockGroups;
+        }
+    }
+
     public class TableGroup : Group
     {
-        public DeltaInsertOp Op { get; private set; }
-        public IList<DeltaInsertOp> Ops { get; set; }
+        public IList<TableLevel> TableLevels { get; private set; }
 
-        public TableGroup(DeltaInsertOp op, IList<DeltaInsertOp> ops)
+        public TableGroup(IList<TableLevel> tableLevels)
         {
-            Op = op;
-            Ops = ops;
+            TableLevels = tableLevels;
         }
     }
 
-    public class ListTable : Group
-    {
-        public IList<TableGroup> Items { get; private set; }
-
-        public ListTable(IList<TableGroup> items)
-        {
-            Items = items;
-        }
-    }
+    // =========================================
 
     public class ListGroup : Group
     {
@@ -201,12 +204,7 @@ namespace Quill.Delta
                 {
                     result.Add(new BlotBlock(op));
                 }
-                else if (op.IsContainerTable()) {
-                    var opsSlice = ArrayHelpers.SliceFromReverseWhile(ops, i - 1, CanBeInBlock);
-                    result.Add(new TableGroup(op, opsSlice.Elements));
-                    i = opsSlice.SliceStartsAt > -1 ? opsSlice.SliceStartsAt : i;
-                }
-                else if (op.IsContainerBlock())
+                else if (op.IsContainerBlock() || op.IsContainerTable())
                 {
                     var opsSlice = ArrayHelpers.SliceFromReverseWhile(ops, i - 1, CanBeInBlock);
                     result.Add(new BlockGroup(op, opsSlice.Elements));
@@ -231,13 +229,10 @@ namespace Quill.Delta
             return GroupGroup.GroupConsecutiveElementsWhile(groups,
                 (Group g, Group gPrev) =>
                 {
-                    if (g is TableGroup tg && gPrev is TableGroup tgPrev)
-                    {
-                        return AreBothCodeTable(tg, tgPrev);
-                    }
                     if (g is BlockGroup bg && gPrev is BlockGroup bgPrev)
                     {
-                        return (codeBlocks && AreBothCodeblocks(bg, bgPrev)) ||
+                        return AreBothCodeTable(bg, bgPrev) ||
+                            (codeBlocks && AreBothCodeblocks(bg, bgPrev)) ||
                             (blockquotes && AreBothBlockquotesWithSameAdi(bg, bgPrev)) ||
                             (header && AreBothSameHeadersWithSameAdi(bg, bgPrev));
                     }
@@ -256,51 +251,40 @@ namespace Quill.Delta
             {
                 if (group is GroupGroup gg)
                 {
-                    if (gg is BlockGroup) {
-                        var elm = (BlockGroup)gg.Groups[0];
-                        elm.Ops = gg.Groups.SelectMany((g, i) =>
+                    var elm = (BlockGroup)gg.Groups[0];
+                    elm.Ops = gg.Groups.SelectMany((g, i) =>
+                    {
+                        var bg = (BlockGroup)g;
+                        if (!bg.Ops.Any())
                         {
-                            var bg = (BlockGroup)g;
-                            if (!bg.Ops.Any())
-                            {
-                                return newLineOpSeq;
-                            }
-                            return i < gg.Groups.Count - 1 ?
-                                bg.Ops.Concat(newLineOpSeq) : bg.Ops;
-                        }).ToList();
-                        return elm;
-                    } 
-                    // else if (gg is TableGroup) {
-                    //     var elm = (TableGroup)gg.Groups[0];
-                    //     elm.Ops = gg.Groups.SelectMany((g, i) =>
-                    //     {
-                    //         var tg = (TableGroup)g;
-                    //         if (!tg.Ops.Any())
-                    //         {
-                    //             return newLineOpSeq;
-                    //         }
-                    //         return i < gg.Groups.Count - 1 ?
-                    //             tg.Ops.Concat(newLineOpSeq) : tg.Ops;
-                    //     }).ToList();
-                    //     return elm;
-                    // }
-                    
+                            return newLineOpSeq;
+                        }
+                        return i < gg.Groups.Count - 1 ?
+                            bg.Ops.Concat(newLineOpSeq) : bg.Ops;
+                    }).ToList();
+                    return elm;
                 }
                 if (group is BlockGroup bgt && !bgt.Ops.Any())
                 {
                     bgt.Ops.Add(newLineOp);
                 }
-                if (group is TableGroup tbt && !tbt.Ops.Any())
-                {
-                    tbt.Ops.Add(newLineOp);
-                }
+
                 return group;
             }).ToList();
         }
 
-        public static bool AreBothCodeTable(TableGroup g1, TableGroup gOther)
+        public static bool AreBothCodeTable(BlockGroup g1, BlockGroup gOther)
         {
-            return g1.Op.IsContainerTable() && gOther.Op.IsContainerTable();
+            if (g1.Op.Attributes.isTable && gOther.Op.Attributes.isTable)
+            {
+                var g1TableLevel = g1.Op.Attributes.Table;
+                var gOtherTableLevel = gOther.Op.Attributes.Table;
+                if (g1TableLevel == gOtherTableLevel)
+                {
+                    return true;
+                }
+            }
+            return false;          
         }
 
         public static bool AreBothCodeblocks(BlockGroup g1, BlockGroup gOther)

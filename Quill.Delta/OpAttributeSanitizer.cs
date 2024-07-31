@@ -56,6 +56,7 @@ namespace Quill.Delta
             var table = dirtyAttrs.GetStringValue("table");
             if (!String.IsNullOrEmpty(table))
             {
+                cleanAttrs.isTable = true;
                 cleanAttrs.Table = table;
             }
 

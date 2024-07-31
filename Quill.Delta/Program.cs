@@ -53,6 +53,31 @@ namespace Quill.Delta
                 {attributes: {link: 'https://www.mbl.is/myndasafn/ljosmyndari-483', background: 'transparent', color: '#003399', italic: true}, insert: 'mbl.is/Eggert Jóhannesson'},
                 {insert: '\n\n\n'}
             ]");
+            // var opsArray = JArray.Parse(@"[
+            //     {insert: '\nThis is a Table'}, {attributes: {header: 2}, insert: '\n'},
+            //     {insert: 'Symbol'}, {attributes: {table: '1'}, insert: '\n'},
+            //     {insert: 'Timestamp'}, {attributes: {table: '1'}, insert: '\n'},
+            //     {insert: 'Alert'}, {attributes: {table: '1'}, insert: '\n'},
+            //     {insert: 'Latest reviewer'}, {attributes: {table: '1'}, insert: '\n'},
+            //     {insert: 'Private Client ID'}, {attributes: {table: '1'}, insert: '\n'},
+            //     {insert: 'Alert status'}, {attributes: {table: '1'}, insert: '\n'},
+            //     {insert: 'Alert comment'}, {attributes: {table: '1'}, insert: '\n'},
+            //     {insert: 'MAREL'}, {attributes: {table: '2'}, insert: '\n'},
+            //     {insert: '6.3.2024 11:29:55'}, {attributes: {table: '2'}, insert: '\n'},
+            //     {insert: 'Multiple order changes - Private'}, {attributes: {table: '2'}, insert: '\n'},
+            //     {insert: 'leo@kodi.is'}, {attributes: {table: '2'}, insert: '\n'},
+            //     {insert: '1000000001'}, {attributes: {align: 'right', table: '2'}, insert: '\n'},
+            //     {insert: 'Investigating'}, {attributes: {table: '2'}, insert: '\n'},
+            //     {insert: 'test'}, {attributes: {table: '2'}, insert: '\n'},
+            //     {insert: 'MAREL'}, {attributes: {table: '3'}, insert: '\n'},
+            //     {insert: '6.3.2024 13:20:56'}, {attributes: {table: '3'}, insert: '\n'},
+            //     {insert: 'Large order value shares ISK - Private'}, {attributes: {table: '3'}, insert: '\n'},
+            //     {insert: 'leo@kodi.is'}, {attributes: {table: '3'}, insert: '\n'},
+            //     {insert: '1000000001'}, {attributes: {align: 'right', table: '3'}, insert: '\n'},
+            //     {insert: 'Investigating'}, {attributes: {table: '3'}, insert: '\n'},
+            //     {insert: 'test'}, {attributes: {table: '3'}, insert: '\n'},
+            //     {insert: '\nThis is a Table'}, {attributes: {header: 2}, insert: '\n'},
+            // ]");
 
 		var converter = new HtmlConverter(opsArray);
 		string html2 = converter.Convert();

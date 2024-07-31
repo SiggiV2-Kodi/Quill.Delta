@@ -11,6 +11,8 @@ namespace Quill.Delta
 
         OpToHtmlConverterOptions _converterOptions;
 
+        private List<BlockGroup> _makeTables = new List<BlockGroup>();
+
         public HtmlConverter(JArray ops, HtmlConverterOptions options = null) :
             base(ops, options ?? new HtmlConverterOptions())
         {
@@ -29,11 +31,19 @@ namespace Quill.Delta
 
         public HtmlConverterOptions Options { get => (HtmlConverterOptions)_options; }
 
+        
+
         public string Convert()
         {
             var groups = GetGroupedOps();
             return String.Join("", groups.Select(group =>
             {
+                if (group is not BlockGroup && _makeTables.Count > 0)
+                {
+                    var tableRender = RenderTable(_makeTables);
+                    _makeTables.Clear();
+                    return tableRender;
+                }
                 if (group is ListGroup lg)
                 {
                     return RenderWithCallbacks(
@@ -42,9 +52,14 @@ namespace Quill.Delta
                 }
                 else if (group is BlockGroup bg)
                 {
-                    return RenderWithCallbacks(
+                    if (bg.Op.IsTable())
+                    {
+                        _makeTables.Add(bg);
+                        return "";
+                    } else {
+                        return RenderWithCallbacks(
                        GroupType.Block, group, () => RenderBlock(bg.Op, bg.Ops));
-
+                    }
                 }
                 else if (group is BlotBlock bb)
                 {
@@ -103,6 +118,44 @@ namespace Quill.Delta
             return parts.OpeningTag + (liElementsHtml) +
                 (li.InnerList != null ? RenderList(li.InnerList) : "")
                 + parts.ClosingTag;
+        }
+
+        internal string RenderTable(List<BlockGroup> blocks)
+        {
+            var startTag = HtmlHelpers.MakeStartTag("table");
+            var endTag = HtmlHelpers.MakeEndTag("table");
+            // var converter = new OpToHtmlConverter(block.Op, _converterOptions);
+            // var parts = converter.GetHtmlParts();
+            for (var i = 0; i < blocks.Count; i++)
+            {
+                var block = blocks[i];
+                var isLast = i == blocks.Count - 1;
+                
+                startTag += HtmlHelpers.MakeStartTag("tr");
+                for (var j = 0; j < block.Ops.Count; j++)
+                {
+                    var op = block.Ops[j];
+                    if (!op.Attributes.isTable && op.Insert.Value != "\n" && i == 0)
+                    {
+                        startTag += HtmlHelpers.MakeStartTag("th");
+                        startTag += op.Insert.Value;
+                        startTag += HtmlHelpers.MakeEndTag("th");
+                    } else if (!op.Attributes.isTable && op.Insert.Value != "\n") {
+                        startTag += HtmlHelpers.MakeStartTag("td");
+                        startTag += op.Insert.Value;
+                        startTag += HtmlHelpers.MakeEndTag("td");
+                    }
+                }
+                startTag += HtmlHelpers.MakeEndTag("tr");
+
+                if (isLast)
+                {
+                    startTag += endTag;
+                    return startTag;
+                }
+            }
+
+            return "";
         }
 
         internal string RenderBlock(DeltaInsertOp bop, IList<DeltaInsertOp> ops)
