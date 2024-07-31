@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Quill.Delta
 {
@@ -24,6 +25,10 @@ namespace Quill.Delta
         public static DeltaInsertOp CreateNewLineOp()
         {
             return new DeltaInsertOp("\n");
+        }
+
+        public bool IsContainerTable() {
+            return IsTable();
         }
 
         public bool IsContainerBlock()
@@ -130,6 +135,11 @@ namespace Quill.Delta
             return op.Attributes.List.HasValue &&
                 (Attributes.List == op.Attributes.List ||
                     op.IsACheckList() && IsACheckList());
+        }
+
+        public bool IsTable()
+        {
+            return Attributes.Table != null;
         }
 
         public bool IsText()

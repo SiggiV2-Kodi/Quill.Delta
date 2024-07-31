@@ -23,7 +23,7 @@ namespace Quill.Delta
              "blockquote", "code-block", "renderAsBlock",
              "background", "color", "font", "size", "link",
              "script", "list", "header", "align", "direction",
-             "indent", "mentions", "mention", "width"
+             "indent", "mentions", "mention", "width", "table"
         };
 
         public static OpAttributes Sanitize(JToken dirtyAttrs)
@@ -51,6 +51,12 @@ namespace Quill.Delta
             if (!String.IsNullOrEmpty(link))
             {
                 cleanAttrs.Link = UrlHelpers.Sanitize(link);
+            }
+
+            var table = dirtyAttrs.GetStringValue("table");
+            if (!String.IsNullOrEmpty(table))
+            {
+                cleanAttrs.Table = table;
             }
 
             var target = dirtyAttrs.GetStringValue("target");

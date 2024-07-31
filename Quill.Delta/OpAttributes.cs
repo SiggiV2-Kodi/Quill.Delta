@@ -11,6 +11,8 @@ namespace Quill.Delta
         public string Size { get; set; }
         public string Width { get; set; }
 
+        public string Table { get; set; }
+
         public string Link { get; set; }
         public bool? Bold { get; set; }
         public bool? Italic { get; set; }
