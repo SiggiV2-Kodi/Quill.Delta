@@ -77,7 +77,7 @@ namespace Quill.Delta
 
         public bool IsInline()
         {
-            return !(IsContainerBlock() || IsVideo() || IsCustomBlock());
+            return !(IsContainerBlock() || IsVideo() || IsCustomBlock() || IsTable());
         }
 
         public bool IsCodeBlock()

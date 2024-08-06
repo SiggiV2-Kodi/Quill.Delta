@@ -198,7 +198,63 @@ namespace Quill.Delta
                 {insert: 'The Dot'}, {attributes: {list: 'bullet'}, insert: '\n'},
             ]");
 
-		var converter = new HtmlConverter(opsArray3);
+            var opsArray4 = JArray.Parse(@"[
+                {insert: '\nThis is a Table'}, {attributes: {header: 2}, insert: '\n'},
+                {insert: 'Symbol'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Timestamp'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Alert'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Latest reviewer'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Private Client ID'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Alert status'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Alert comment'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'MAREL'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: '6.3.2024 11:29:55'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'Multiple order changes - Private'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'leo@kodi.is'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: '1000000001'}, {attributes: {align: 'right', table: '2'}, insert: '\n'},
+                {insert: 'Investigating'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'test'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'MAREL'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: '6.3.2024 13:20:56'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: 'Large order value shares ISK - Private'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: 'leo@kodi.is'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: '1000000001'}, {attributes: {align: 'right', table: '3'}, insert: '\n'},
+                {insert: 'Investigating'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: 'test'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: '\nThis is a IMG'}, {attributes: {header: 2}, insert: '\n'},
+                {insert: '\nThis is a IMG'}, {attributes: {header: 2}, insert: '\n'},
+                {insert: '\nThis is a IMG'}, {attributes: {header: 2}, insert: '\n'},
+            ]");
+
+            var opsArray5 = JArray.Parse(@"[
+                {insert: '\nThis is a Table'}, {attributes: {header: 2}, insert: '\n'},
+                {insert: 'Symbol'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Timestamp'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Alert'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Latest reviewer'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Private Client ID'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Alert status'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'Alert comment'}, {attributes: {table: '1'}, insert: '\n'},
+                {insert: 'MAREL'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: '6.3.2024 11:29:55'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'Multiple order changes - Private'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'leo@kodi.is'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: '1000000001'}, {attributes: {align: 'right', table: '2'}, insert: '\n'},
+                {insert: 'Investigating'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'test'}, {attributes: {table: '2'}, insert: '\n'},
+                {insert: 'MAREL'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: '6.3.2024 13:20:56'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: 'Large order value shares ISK - Private'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: 'leo@kodi.is'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: '1000000001'}, {attributes: {align: 'right', table: '3'}, insert: '\n'},
+                {insert: 'Investigating'}, {attributes: {table: '3'}, insert: '\n'},
+                {insert: 'test'}, {attributes: {table: '3'}, insert: '\n'},
+            {attributes: {bold: true}, insert: 'bold Text bla bla bla'}, {insert: '\n'},
+            {attributes: {bold: true}, insert: 'bold Text bla bla bla'}, {insert: '\n'},
+            {attributes: {bold: true}, insert: 'bold Text bla bla bla'}, {insert: '\n'},
+            ]");
+
+		var converter = new HtmlConverter(opsArray5);
 		string html2 = converter.Convert();
 
 		Console.WriteLine(html2);
