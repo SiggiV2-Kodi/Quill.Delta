@@ -36,17 +36,19 @@ namespace Quill.Delta
         public string Convert()
         {
             var groups = GetGroupedOps();
-            return String.Join("", groups.Select(group =>
+            return String.Join("", groups.Select((group, index) =>
             {
+                var tableRender = "";
+
                 if (group is not BlockGroup && _makeTables.Count > 0)
                 {
-                    var tableRender = RenderTable(_makeTables);
+                    tableRender = RenderTable(_makeTables);
                     _makeTables.Clear();
-                    return tableRender;
                 }
+
                 if (group is ListGroup lg)
                 {
-                    return RenderWithCallbacks(
+                    return tableRender + RenderWithCallbacks(
                         GroupType.List, group, () => RenderList(lg));
 
                 }
@@ -55,27 +57,33 @@ namespace Quill.Delta
                     if (bg.Op.IsTable())
                     {
                         _makeTables.Add(bg);
+                        if (index == groups.Count - 1)
+                        {
+                            tableRender = RenderTable(_makeTables);
+                            _makeTables.Clear();
+                            return tableRender;
+                        }
                         return "";
                     } else {
-                        return RenderWithCallbacks(
+                        return tableRender + RenderWithCallbacks(
                        GroupType.Block, group, () => RenderBlock(bg.Op, bg.Ops));
                     }
                 }
                 else if (group is BlotBlock bb)
                 {
-                    return RenderCustom(bb.Op, null);
+                    return tableRender + RenderCustom(bb.Op, null);
                 }
                 else if (group is VideoItem vi)
                 {
                     return RenderWithCallbacks(GroupType.Video, group, () =>
                     {
                         var converter = new OpToHtmlConverter(vi.Op, _converterOptions);
-                        return converter.GetHtml();
+                        return tableRender + converter.GetHtml();
                     });
                 }
                 else // InlineGroup
                 {
-                    return RenderWithCallbacks(GroupType.InlineGroup, group, () =>
+                    return tableRender + RenderWithCallbacks(GroupType.InlineGroup, group, () =>
                         RenderInlines(((InlineGroup)group).Ops, true));
                 }
             }));

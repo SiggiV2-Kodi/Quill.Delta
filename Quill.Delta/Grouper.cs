@@ -132,31 +132,6 @@ namespace Quill.Delta
         }
     }
 
-    // =========== NEW TABLE GROUPS ===========
-    public class TableLevel : Group
-    {
-        public int Level { get; private set; }
-        public IList<BlockGroup> BlockGroups { get; set; }
-
-        public TableLevel(int level, IList<BlockGroup> blockGroups)
-        {
-            Level = level;
-            BlockGroups = blockGroups;
-        }
-    }
-
-    public class TableGroup : Group
-    {
-        public IList<TableLevel> TableLevels { get; private set; }
-
-        public TableGroup(IList<TableLevel> tableLevels)
-        {
-            TableLevels = tableLevels;
-        }
-    }
-
-    // =========================================
-
     public class ListGroup : Group
     {
         public IList<ListItem> Items { get; private set; }

@@ -12,7 +12,7 @@ namespace Quill.Delta
 
             // convert grouped ones into listgroup
             var nested = groupedByListGroups.SelectMany(g => g is GroupGroup gg ?
-                NestListSection(gg.Groups.OfType<ListGroup>().ToList()) :
+                NestListSection(gg.Groups.Cast<ListGroup>().ToList()) :
                 Enumerable.Repeat(g, 1)).ToList();
 
             var groupRootLists = GroupGroup.GroupConsecutiveElementsWhile(nested,
@@ -52,14 +52,8 @@ namespace Quill.Delta
             {
                 if (g is GroupGroup gg)
                 {
-                    if (g is BlockGroup) {
-                        return new ListGroup(gg.Groups.Select(
-                                                bg2 => new ListItem((BlockGroup)bg2)).ToList());
-                    } else if (g is TableGroup) {
-                        // return new ListTable(gg.Groups.Select(
-                        //                         tg2 => new ListItem((TableGroup)tg2)).ToList());
-                    }
-                    
+                    return new ListGroup(gg.Groups.Select(
+                        bg2 => new ListItem((BlockGroup)bg2)).ToList()); 
                 }
                 if (g is BlockGroup bg && bg.Op.IsList())
                 {
